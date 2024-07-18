@@ -350,12 +350,7 @@ public class AutoTeleport extends JavaPlugin implements Listener {
             }
             return true;
         } else if (command.getName().equalsIgnoreCase("tpahelp")) {
-            if (sender instanceof Player) {
-                Player player = (Player) sender;
-                player.sendMessage(getMessage("tpa_help"));
-            } else {
-                sender.sendMessage(getMessage("tpa_help"));
-            }
+            sender.sendMessage(getMessage("tpa_help"));
             return true;
         } else if (command.getName().equalsIgnoreCase("tpareload")) {
             if (sender.hasPermission("autoteleport.reload") || sender.isOp()) {
