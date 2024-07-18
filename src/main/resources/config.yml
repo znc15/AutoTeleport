@@ -1,15 +1,36 @@
 # config.yml
-teleport-wait-time: 5 # 传送请求的等待时间（秒）
-random-teleport-range-min: 100 # 随机传送的最小范围（方块）
-random-teleport-range-max: 1000 # 随机传送的最大范围（方块）
-language: zh_CN # 使用的语言文件（en_US 或 zh_CN）
-bossbar-enabled: true # 启用或禁用 BossBar 通知
-random-teleport-bossbar-enabled: true # 启用或禁用随机传送的 BossBar 通知
-gradient-start-color: '#00ff00' # 渐变起始颜色（绿色）
-gradient-end-color: '#ff0000' # 渐变结束颜色（红色）
-enable-stats: true # 启用或禁用统计
-enable-update-check: true # 启用或禁用自动更新检查
-charge-by-distance: true # 是否根据玩家之间的距离收费
+# 传送请求的等待时间（秒）
+teleport-wait-time: 5
+
+# 随机传送的最小范围（方块）
+random-teleport-range-min: 100
+
+# 随机传送的最大范围（方块）
+random-teleport-range-max: 1000
+
+# 使用的语言文件（en_US 或 zh_CN）
+language: zh_CN
+
+# 启用或禁用 BossBar 通知
+bossbar-enabled: true
+
+# 启用或禁用随机传送的 BossBar 通知
+random-teleport-bossbar-enabled: true
+
+# 渐变起始颜色（绿色）
+gradient-start-color: '#00ff00'
+
+# 渐变结束颜色（红色）
+gradient-end-color: '#ff0000'
+
+# 启用或禁用统计
+enable-stats: true
+
+# 启用或禁用自动更新检查
+enable-update-check: true
+
+# 是否根据玩家之间的距离收费
+charge-by-distance: false
 
 # 不同权限的冷却时间设置（秒）
 cooldowns:
@@ -29,8 +50,9 @@ costs:
     amount: 0
 
 # 按距离收费的费用倍率设置
+  # 每单位距离的费用倍率
 distance-cost-multipliers:
-  default: 0.1 # 每单位距离的费用倍率
+  default: 0.1
   autoteleport.vip: 0.05
   autoteleport.mvp: 0.02
   autoteleport.free: 0.0
