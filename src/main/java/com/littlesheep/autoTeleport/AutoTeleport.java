@@ -53,6 +53,17 @@ public class AutoTeleport extends JavaPlugin implements Listener {
         saveDefaultConfig();
         ensureLangFiles();
         loadLanguageFile();
+        // 输出启动信息
+        getLogger().info("==========================================");
+        getLogger().info(getDescription().getName());
+        getLogger().info("Version/版本: " + getDescription().getVersion());
+        getLogger().info("Author/作者: " + String.join(", ", getDescription().getAuthors()));
+        getLogger().info("QQ Group/QQ群: 690216634");
+        getLogger().info("Github: https://github.com/znc15/AutoTeleport");
+        getLogger().info(getDescription().getName() + " 已启用！");
+        getLogger().info("❛‿˂̵✧");
+        getLogger().info("==========================================");
+
         if (getConfig().getBoolean("enable-stats", true)) {
             setupMetrics();
         }
