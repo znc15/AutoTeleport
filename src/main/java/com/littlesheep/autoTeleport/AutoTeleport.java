@@ -84,8 +84,15 @@ public class AutoTeleport extends JavaPlugin implements Listener {
             langDir.mkdirs();
         }
 
-        saveResource("lang/en_US.yml", false);
-        saveResource("lang/zh_CN.yml", false);
+        saveResourceIfNotExists("lang/en_US.yml");
+        saveResourceIfNotExists("lang/zh_CN.yml");
+    }
+
+    private void saveResourceIfNotExists(String resourcePath) {
+        File file = new File(getDataFolder(), resourcePath);
+        if (!file.exists()) {
+            saveResource(resourcePath, false);
+        }
     }
 
     private void ensurePlayerDataFile(Player player) {
