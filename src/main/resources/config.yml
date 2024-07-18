@@ -1,0 +1,44 @@
+# config.yml
+teleport-wait-time: 5 # 传送请求的等待时间（秒）
+random-teleport-range-min: 100 # 随机传送的最小范围（方块）
+random-teleport-range-max: 1000 # 随机传送的最大范围（方块）
+language: zh_CN # 使用的语言文件（en_US 或 zh_CN）
+bossbar-enabled: true # 启用或禁用 BossBar 通知
+random-teleport-bossbar-enabled: true # 启用或禁用随机传送的 BossBar 通知
+gradient-start-color: '#00ff00' # 渐变起始颜色（绿色）
+gradient-end-color: '#ff0000' # 渐变结束颜色（红色）
+enable-stats: true # 启用或禁用统计
+enable-update-check: true # 启用或禁用自动更新检查
+
+# 不同权限的冷却时间设置（秒）
+cooldowns:
+  default: 10
+  autoteleport.vip: 5
+  autoteleport.mvp: 2
+
+# 不同权限的传送费用设置
+costs:
+  default:
+    amount: 10
+  autoteleport.vip:
+    amount: 5
+  autoteleport.mvp:
+    amount: 2
+  autoteleport.free:
+    amount: 0
+
+# 允许传送的世界
+allowed-worlds:
+  - world
+  - world_nether
+
+# 随机传送费用
+random-teleport-costs:
+  default:
+    amount: 15
+  autoteleport.vip:
+    amount: 10
+  autoteleport.mvp:
+    amount: 5
+  autoteleport.free:
+    amount: 0

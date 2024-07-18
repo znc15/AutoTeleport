@@ -1,0 +1,20 @@
+name: AutoTeleport
+version: '1.0.0'
+main: com.littlesheep.autoTeleport.AutoTeleport
+api-version: '1.20'
+authors: [ YangXiaoMian ]
+description: 一个简单的传送插件
+website: https://www.littlesheep.cc
+commands:
+  tpa:
+    description: Teleport to another player after 3 seconds.
+  tpaccept:
+    description: Accept a teleport request.
+  tpdeny:
+    description: Deny a teleport request.
+  rtp:
+    description: Randomly teleport within a defined range.
+  setwaittime:
+    description: 设置传送时间
+  tpcancel:
+    description: 取消自动传送
