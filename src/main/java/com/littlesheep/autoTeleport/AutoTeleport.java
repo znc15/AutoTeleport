@@ -67,6 +67,9 @@ public class AutoTeleport extends JavaPlugin implements Listener {
         if (getConfig().getBoolean("enable-stats", true)) {
             setupMetrics();
         }
+        if (getConfig().getBoolean("enable-update-check", true)) {
+            checkForUpdates(Bukkit.getConsoleSender()); // 在插件启用时自动检查更新
+        }
         setupEconomy();
         getServer().getPluginManager().registerEvents(this, this);
         getLogger().info("AutoTeleport has been enabled");
@@ -74,7 +77,9 @@ public class AutoTeleport extends JavaPlugin implements Listener {
 
     @Override
     public void onDisable() {
-        getLogger().info("AutoTeleport has been disabled");
+        getLogger().info("==========================================");
+        getLogger().info("Goodbye! 插件已关闭。");
+        getLogger().info("==========================================");
         if (bossBar != null) {
             bossBar.removeAll();
         }
