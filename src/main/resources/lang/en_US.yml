@@ -12,6 +12,7 @@ cooldown_message: "&#ff0000You must wait {seconds} seconds before you can telepo
 bossbar_title: "&#ffff00{player} &#00ff00wants to teleport to you. &#ff0000{seconds} &#00ff00seconds left."
 not_enough_money: "&#ff0000You don't have enough money to teleport."
 cost_message: "&#00ff00Teleport cost &#ffff00{amount} &#00ff00coins."
+distance_message: "&#00ff00The distance between you and the target is &#ffff00{distance} &#00ff00meters."
 tp_cancelled: "&#ff0000Auto teleport cancelled."
 set_wait_time: "&#00ff00Your teleport wait time has been set to &#ffff00{seconds} &#00ff00seconds."
 invalid_world: "&#ff0000You are in a world where teleportation is not allowed."

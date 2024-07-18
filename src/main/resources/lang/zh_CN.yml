@@ -12,6 +12,7 @@ cooldown_message: "&#ff0000你必须等待 {seconds} 秒后才能再次传送。
 bossbar_title: "&#ffff00{player} &#00ff00想要传送到你的位置。 &#ff0000{seconds} &#00ff00秒后自动传送。"
 not_enough_money: "&#ff0000你没有足够的金币进行传送。"
 cost_message: "&#00ff00传送花费 &#ffff00{amount} &#00ff00金币。"
+distance_message: "&#00ff00两人之间的距离是 &#ffff00{distance} &#00ff00米。"
 tp_cancelled: "&#ff0000自动传送已取消。"
 set_wait_time: "&#00ff00你的传送等待时间已设置为 &#ffff00{seconds} &#00ff00秒。"
 invalid_world: "&#ff0000你所在的世界不允许使用传送功能。"

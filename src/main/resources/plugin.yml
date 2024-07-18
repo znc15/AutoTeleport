@@ -18,3 +18,7 @@ commands:
     description: 设置传送时间
   tpcancel:
     description: 取消自动传送
+  tpahelp:
+    description: 帮助
+  tpareload:
+    description: 重新加载配置文件

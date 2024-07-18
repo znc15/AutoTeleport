@@ -494,6 +494,7 @@ public class AutoTeleport extends JavaPlugin implements Listener {
             double distance = player.getLocation().distance(target.getLocation());
             double multiplier = getDistanceCostMultiplier(player);
             baseAmount += distance * multiplier;
+            player.sendMessage(getMessage("distance_message", "distance", String.format("%.2f", distance)));
         }
 
         if (economy != null && !economy.has(player, baseAmount)) {
@@ -501,7 +502,7 @@ public class AutoTeleport extends JavaPlugin implements Listener {
             return false;
         }
         economy.withdrawPlayer(player, baseAmount);
-        player.sendMessage(getMessage("cost_message", "amount", String.valueOf(baseAmount)));
+        player.sendMessage(getMessage("cost_message", "amount", String.format("%.2f", baseAmount)));
         return true;
     }
 
@@ -524,7 +525,7 @@ public class AutoTeleport extends JavaPlugin implements Listener {
                     return false;
                 }
                 economy.withdrawPlayer(player, amount);
-                player.sendMessage(getMessage("cost_message", "amount", String.valueOf(amount)));
+                player.sendMessage(getMessage("cost_message", "amount", String.format("%.2f", amount)));
                 break;
             }
         }
