@@ -61,14 +61,11 @@ public class AutoTeleport extends JavaPlugin implements Listener {
         getLogger().info("QQ Group/QQ群: 690216634");
         getLogger().info("Github: https://github.com/znc15/AutoTeleport");
         getLogger().info(getDescription().getName() + " 已启用！");
-        getLogger().info("❛‿˂̵✧");
+        getLogger().info("Ciallo～(∠・ω< )⌒★");
         getLogger().info("==========================================");
 
         if (getConfig().getBoolean("enable-stats", true)) {
             setupMetrics();
-        }
-        if (getConfig().getBoolean("enable-update-check", true)) {
-            checkForUpdates();
         }
         setupEconomy();
         getServer().getPluginManager().registerEvents(this, this);
@@ -184,7 +181,7 @@ public class AutoTeleport extends JavaPlugin implements Listener {
         Metrics metrics = new Metrics(this, pluginId);
     }
 
-    private void checkForUpdates() {
+    private void checkForUpdates(CommandSender sender) {
         Bukkit.getScheduler().runTaskAsynchronously(this, () -> {
             try {
                 URL url = new URL("https://api.tcbmc.cc/update/AutoTeleport/update.json");
@@ -198,12 +195,12 @@ public class AutoTeleport extends JavaPlugin implements Listener {
                 String latestVersion = json.get("version").getAsString();
 
                 if (!this.getDescription().getVersion().equalsIgnoreCase(latestVersion)) {
-                    getLogger().info("A new version of AutoTeleport is available: " + latestVersion);
+                    sender.sendMessage(getMessage("update_available", "version", latestVersion));
                 } else {
-                    getLogger().info("You are using the latest version of AutoTeleport.");
+                    sender.sendMessage(getMessage("update_not_needed"));
                 }
             } catch (Exception e) {
-                getLogger().warning("Failed to check for updates: " + e.getMessage());
+                sender.sendMessage(ChatColor.RED + "Failed to check for updates: " + e.getMessage());
             }
         });
     }
@@ -375,6 +372,7 @@ public class AutoTeleport extends JavaPlugin implements Listener {
                 reloadConfig();
                 reloadLanguageFile();
                 sender.sendMessage(getMessage("config_reloaded"));
+                checkForUpdates(sender); // 添加此行
             } else {
                 sender.sendMessage(getMessage("no_permission"));
             }
