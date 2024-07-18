@@ -46,6 +46,7 @@ public class AutoTeleport extends JavaPlugin implements Listener {
     private BossBar bossBar;
     private final Map<UUID, Long> teleportCooldowns = new HashMap<>();
     private Economy economy;
+    private final Map<Player, BukkitRunnable> autoTeleportTasks = new HashMap<>();
 
     @Override
     public void onEnable() {
@@ -113,6 +114,18 @@ public class AutoTeleport extends JavaPlugin implements Listener {
         }
 
         langConfig = YamlConfiguration.loadConfiguration(langFile);
+    }
+
+    private void reloadLanguageFile() {
+        String language = getConfig().getString("language", "zh_CN");
+        File langFile = new File(getDataFolder(), "lang/" + language + ".yml");
+
+        if (langFile.exists()) {
+            langConfig = YamlConfiguration.loadConfiguration(langFile);
+            getLogger().info("Language file reloaded.");
+        } else {
+            getLogger().warning("Language file not found. Reload failed.");
+        }
     }
 
     private String getMessage(String key, String... replacements) {
@@ -228,19 +241,24 @@ public class AutoTeleport extends JavaPlugin implements Listener {
                     bossBar.setProgress(1.0);
                 }
 
-                Bukkit.getScheduler().runTaskLater(this, () -> {
-                    if (bossBarEnabled) {
-                        bossBar.removePlayer(target);
-                        bossBar = null;
+                BukkitRunnable autoTeleportTask = new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        if (bossBarEnabled) {
+                            bossBar.removePlayer(target);
+                            bossBar = null;
+                        }
+                        if (tpaRequests.get(target) == player) {
+                            player.teleport(target);
+                            tpaRequests.remove(target);
+                            player.sendMessage(getMessage("tpa_teleporting"));
+                            target.sendMessage(getMessage("tpa_teleporting"));
+                            setCooldown(player);
+                        }
                     }
-                    if (tpaRequests.get(target) == player) {
-                        player.teleport(target);
-                        tpaRequests.remove(target);
-                        player.sendMessage(getMessage("tpa_teleporting"));
-                        target.sendMessage(getMessage("tpa_teleporting"));
-                        setCooldown(player);
-                    }
-                }, waitTime * 20L);
+                };
+                autoTeleportTasks.put(target, autoTeleportTask);
+                autoTeleportTask.runTaskLater(this, waitTime * 20L);
 
                 if (bossBarEnabled) {
                     for (int i = 1; i <= waitTime; i++) {
@@ -266,6 +284,10 @@ public class AutoTeleport extends JavaPlugin implements Listener {
                         bossBar.removePlayer(player);
                         bossBar = null;
                     }
+                    if (autoTeleportTasks.containsKey(player)) {
+                        autoTeleportTasks.get(player).cancel();
+                        autoTeleportTasks.remove(player);
+                    }
                     requester.teleport(player);
                     tpaRequests.remove(player);
                     player.sendMessage(getMessage("tpa_accepted"));
@@ -284,6 +306,10 @@ public class AutoTeleport extends JavaPlugin implements Listener {
                         bossBar.removePlayer(player);
                         bossBar = null;
                     }
+                    if (autoTeleportTasks.containsKey(player)) {
+                        autoTeleportTasks.get(player).cancel();
+                        autoTeleportTasks.remove(player);
+                    }
                     player.sendMessage(getMessage("tpa_denied"));
                     requester.sendMessage(getMessage("tpa_denied"));
                 } else {
@@ -294,10 +320,10 @@ public class AutoTeleport extends JavaPlugin implements Listener {
         } else if (command.getName().equalsIgnoreCase("tpcancel")) {
             if (sender instanceof Player) {
                 Player player = (Player) sender;
-                Player requester = tpaRequests.remove(player);
-                if (requester != null) {
+                if (autoTeleportTasks.containsKey(player)) {
+                    autoTeleportTasks.get(player).cancel();
+                    autoTeleportTasks.remove(player);
                     player.sendMessage(getMessage("tp_cancelled"));
-                    requester.sendMessage(getMessage("tp_cancelled"));
                     if (bossBar != null) {
                         bossBar.removePlayer(player);
                         bossBar = null;
@@ -321,6 +347,23 @@ public class AutoTeleport extends JavaPlugin implements Listener {
                 } catch (NumberFormatException e) {
                     player.sendMessage(getMessage("tpa_usage"));
                 }
+            }
+            return true;
+        } else if (command.getName().equalsIgnoreCase("tpahelp")) {
+            if (sender instanceof Player) {
+                Player player = (Player) sender;
+                player.sendMessage(getMessage("tpa_help"));
+            } else {
+                sender.sendMessage(getMessage("tpa_help"));
+            }
+            return true;
+        } else if (command.getName().equalsIgnoreCase("tpareload")) {
+            if (sender.hasPermission("autoteleport.reload") || sender.isOp()) {
+                reloadConfig();
+                reloadLanguageFile();
+                sender.sendMessage(getMessage("config_reloaded"));
+            } else {
+                sender.sendMessage(getMessage("no_permission"));
             }
             return true;
         } else if (command.getName().equalsIgnoreCase("rtp")) {

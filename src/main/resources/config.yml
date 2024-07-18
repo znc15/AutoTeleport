@@ -9,6 +9,8 @@ gradient-start-color: '#00ff00' # 渐变起始颜色（绿色）
 gradient-end-color: '#ff0000' # 渐变结束颜色（红色）
 enable-stats: true # 启用或禁用统计
 enable-update-check: true # 启用或禁用自动更新检查
+charge-by-distance: true # 是否根据玩家之间的距离收费
+distance-cost-multiplier: 0.1 # 每单位距离的费用倍率
 
 # 不同权限的冷却时间设置（秒）
 cooldowns:
