@@ -221,7 +221,7 @@ public class AutoTeleport extends JavaPlugin implements Listener {
                     return true;
                 }
 
-                if (!chargePlayer(player)) {
+                if (!chargePlayer(player, target)) {
                     return true;
                 }
 
@@ -481,21 +481,37 @@ public class AutoTeleport extends JavaPlugin implements Listener {
         return getConfig().getLong("cooldowns.default");
     }
 
-    private boolean chargePlayer(Player player) {
+    private boolean chargePlayer(Player player, Player target) {
+        double baseAmount = 0;
         for (String key : getConfig().getConfigurationSection("costs").getKeys(false)) {
             if (player.hasPermission(key)) {
-                double amount = getConfig().getDouble("costs." + key + ".amount");
-
-                if (economy != null && !economy.has(player, amount)) {
-                    player.sendMessage(getMessage("not_enough_money"));
-                    return false;
-                }
-                economy.withdrawPlayer(player, amount);
-                player.sendMessage(getMessage("cost_message", "amount", String.valueOf(amount)));
+                baseAmount = getConfig().getDouble("costs." + key + ".amount");
                 break;
             }
         }
+
+        if (getConfig().getBoolean("charge-by-distance", true)) {
+            double distance = player.getLocation().distance(target.getLocation());
+            double multiplier = getDistanceCostMultiplier(player);
+            baseAmount += distance * multiplier;
+        }
+
+        if (economy != null && !economy.has(player, baseAmount)) {
+            player.sendMessage(getMessage("not_enough_money"));
+            return false;
+        }
+        economy.withdrawPlayer(player, baseAmount);
+        player.sendMessage(getMessage("cost_message", "amount", String.valueOf(baseAmount)));
         return true;
+    }
+
+    private double getDistanceCostMultiplier(Player player) {
+        for (String key : getConfig().getConfigurationSection("distance-cost-multipliers").getKeys(false)) {
+            if (player.hasPermission(key)) {
+                return getConfig().getDouble("distance-cost-multipliers." + key);
+            }
+        }
+        return getConfig().getDouble("distance-cost-multipliers.default");
     }
 
     private boolean chargeRandomTeleport(Player player) {

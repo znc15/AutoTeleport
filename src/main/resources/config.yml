@@ -10,7 +10,6 @@ gradient-end-color: '#ff0000' # 渐变结束颜色（红色）
 enable-stats: true # 启用或禁用统计
 enable-update-check: true # 启用或禁用自动更新检查
 charge-by-distance: true # 是否根据玩家之间的距离收费
-distance-cost-multiplier: 0.1 # 每单位距离的费用倍率
 
 # 不同权限的冷却时间设置（秒）
 cooldowns:
@@ -28,6 +27,13 @@ costs:
     amount: 2
   autoteleport.free:
     amount: 0
+
+# 按距离收费的费用倍率设置
+distance-cost-multipliers:
+  default: 0.1 # 每单位距离的费用倍率
+  autoteleport.vip: 0.05
+  autoteleport.mvp: 0.02
+  autoteleport.free: 0.0
 
 # 允许传送的世界
 allowed-worlds:
