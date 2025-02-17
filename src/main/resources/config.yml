@@ -1,6 +1,6 @@
 # config.yml
 # 传送请求的等待时间（秒）
-teleport-wait-time: 5
+teleport-wait-time: 15
 
 # 随机传送的最小范围（方块）
 random-teleport-range-min: 100

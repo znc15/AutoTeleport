@@ -47,6 +47,7 @@ public class AutoTeleport extends JavaPlugin implements Listener {
     private final Map<UUID, Long> teleportCooldowns = new HashMap<>();
     private Economy economy;
     private final Map<Player, BukkitRunnable> autoTeleportTasks = new HashMap<>();
+    private final Map<UUID, Boolean> autoAcceptSettings = new HashMap<>();
 
     @Override
     public void onEnable() {
@@ -118,7 +119,22 @@ public class AutoTeleport extends JavaPlugin implements Listener {
             try (FileWriter writer = new FileWriter(playerDataFile)) {
                 JsonObject jsonObject = new JsonObject();
                 jsonObject.addProperty("waitTime", getConfig().getInt("teleport-wait-time", 5));
+                jsonObject.addProperty("autoAccept", true);
                 writer.write(jsonObject.toString());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        loadPlayerSettings(player);
+    }
+
+    private void loadPlayerSettings(Player player) {
+        File playerDataFile = new File(getDataFolder(), "data/" + player.getUniqueId() + ".json");
+        if (playerDataFile.exists()) {
+            try (FileReader reader = new FileReader(playerDataFile)) {
+                JsonObject jsonObject = JsonParser.parseReader(reader).getAsJsonObject();
+                boolean autoAccept = jsonObject.has("autoAccept") ? jsonObject.get("autoAccept").getAsBoolean() : true;
+                autoAcceptSettings.put(player.getUniqueId(), autoAccept);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -242,6 +258,15 @@ public class AutoTeleport extends JavaPlugin implements Listener {
                 }
 
                 if (!chargePlayer(player, target)) {
+                    return true;
+                }
+
+                boolean targetAutoAccept = autoAcceptSettings.getOrDefault(target.getUniqueId(), true);
+                
+                if (!targetAutoAccept) {
+                    target.sendMessage(getMessage("tpa_request_manual", "player", player.getName()));
+                    target.sendMessage(getMessage("tpa_request"));
+                    player.sendMessage(getMessage("tpa_sent", "player", target.getName()));
                     return true;
                 }
 
@@ -370,7 +395,18 @@ public class AutoTeleport extends JavaPlugin implements Listener {
             }
             return true;
         } else if (command.getName().equalsIgnoreCase("tpahelp")) {
-            sender.sendMessage(getMessage("tpa_help"));
+            sender.sendMessage(getMessage("help_header"));
+            sender.sendMessage(getMessage("help_tpa"));
+            sender.sendMessage(getMessage("help_tpaccept"));
+            sender.sendMessage(getMessage("help_tpdeny"));
+            sender.sendMessage(getMessage("help_tpcancel"));
+            sender.sendMessage(getMessage("help_rtp"));
+            sender.sendMessage(getMessage("help_setwaittime"));
+            sender.sendMessage(getMessage("help_tpatoggle"));
+            if (sender.hasPermission("autoteleport.reload")) {
+                sender.sendMessage(getMessage("help_tpareload"));
+            }
+            sender.sendMessage(getMessage("help_footer"));
             return true;
         } else if (command.getName().equalsIgnoreCase("tpareload")) {
             if (sender.hasPermission("autoteleport.reload") || sender.isOp()) {
@@ -440,6 +476,32 @@ public class AutoTeleport extends JavaPlugin implements Listener {
                     }, waitTime * 20L);
                 } else {
                     player.sendMessage(getMessage("rtp_not_safe"));
+                }
+            }
+            return true;
+        } else if (command.getName().equalsIgnoreCase("tpatoggle")) {
+            if (sender instanceof Player) {
+                Player player = (Player) sender;
+                boolean currentSetting = autoAcceptSettings.getOrDefault(player.getUniqueId(), true);
+                boolean newSetting = !currentSetting;
+                
+                autoAcceptSettings.put(player.getUniqueId(), newSetting);
+                
+                File playerDataFile = new File(getDataFolder(), "data/" + player.getUniqueId() + ".json");
+                try (FileReader reader = new FileReader(playerDataFile)) {
+                    JsonObject jsonObject = JsonParser.parseReader(reader).getAsJsonObject();
+                    jsonObject.addProperty("autoAccept", newSetting);
+                    try (FileWriter writer = new FileWriter(playerDataFile)) {
+                        writer.write(jsonObject.toString());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                
+                if (newSetting) {
+                    player.sendMessage(getMessage("auto_accept_enabled"));
+                } else {
+                    player.sendMessage(getMessage("auto_accept_disabled"));
                 }
             }
             return true;
